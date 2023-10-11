@@ -35,7 +35,7 @@ const Login = ({ navigation }: any) => {
           fontWeight="medium"
           size="xs"
         >
-          Đăng nhập
+          Đăng nhập tài khoản
         </Heading>
 
         <VStack space={3} mt="5">

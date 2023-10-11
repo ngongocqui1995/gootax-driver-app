@@ -10,6 +10,7 @@ import {
   Text,
   VStack,
 } from "native-base";
+import ProFormSelectCar from "../../components/ProForm/ProFormSelectCar";
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
 
 const Register = ({ navigation }: any) => {
@@ -38,22 +39,23 @@ const Register = ({ navigation }: any) => {
           Đăng ký tài khoản
         </Heading>
         <VStack space={3} mt="5">
-          <FormControl>
+          <FormControl isRequired>
             <FormControl.Label>Tên</FormControl.Label>
             <Input placeholder="Nguyễn Văn A" />
           </FormControl>
-          <FormControl>
+          <FormControl isRequired>
             <FormControl.Label>Số điện thoại</FormControl.Label>
             <Input placeholder="0851234567" />
           </FormControl>
-          <FormControl>
+          <FormControl isRequired>
             <FormControl.Label>Mật khẩu</FormControl.Label>
             <Input type="password" placeholder="123456" />
           </FormControl>
-          <FormControl>
+          <FormControl isRequired>
             <FormControl.Label>Xác nhận mật khẩu</FormControl.Label>
             <Input type="password" placeholder="123456" />
           </FormControl>
+          <ProFormSelectCar />
           <Button mt="2" colorScheme="indigo">
             Đăng ký
           </Button>

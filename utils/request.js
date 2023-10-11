@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://apivoucher-ngongocqui.cloud.okteto.net/",
+  baseURL: "https://apigootax-ngongocqui1995.cloud.okteto.net/",
 });
