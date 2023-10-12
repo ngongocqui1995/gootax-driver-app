@@ -91,7 +91,7 @@ const Register = ({ navigation }: any) => {
 
   const onSubmit = async () => {
     const check = validate();
-    if (!check) {
+    if (check) {
       const [err]: any = await to(
         createDrivers({
           name: state.name?.trim?.(),
