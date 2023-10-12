@@ -1,3 +1,5 @@
+import { useSetState } from "ahooks";
+import to from "await-to-js";
 import {
   Box,
   Button,
@@ -9,10 +11,39 @@ import {
   Link,
   Text,
   VStack,
+  useToast,
 } from "native-base";
+import { useDispatch } from "react-redux";
+import { loginDriver } from "../../services/driver";
+import { updateProfileInfo } from "../../slices/profileSlice";
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
 
 const Login = ({ navigation }: any) => {
+  const toast = useToast();
+  const dispatch = useDispatch();
+  const [state, setState] = useSetState({ phone: "", password: "" });
+
+  const handleLogin = async () => {
+    const [err, res]: any = await to(
+      loginDriver({
+        phone: state.phone?.trim?.(),
+        password: state.password?.trim?.(),
+      })
+    );
+
+    if (err) {
+      return toast.show({
+        description:
+          err?.response?.data?.message?.toString?.() || "Đăng nhập thất bại!",
+        placement: "top",
+      });
+    }
+
+    toast.show({ description: "Đăng nhập thành công!", placement: "top" });
+    dispatch(updateProfileInfo({ token: res.data?.token || "" } as any));
+    navigation.navigate(NAVIGATOR_SCREEN.HOME_SCREEN);
+  };
+
   return (
     <Center w="100%" h="100%">
       <Box safeArea p="2" py="8" w="90%" maxW="290">
@@ -41,11 +72,18 @@ const Login = ({ navigation }: any) => {
         <VStack space={3} mt="5">
           <FormControl>
             <FormControl.Label>Số điện thoại</FormControl.Label>
-            <Input placeholder="0851234567" />
+            <Input
+              placeholder="0851234567"
+              onChangeText={(value) => setState({ phone: value })}
+            />
           </FormControl>
           <FormControl>
             <FormControl.Label>Mật khẩu</FormControl.Label>
-            <Input type="password" placeholder="123456" />
+            <Input
+              type="password"
+              placeholder="123456"
+              onChangeText={(value) => setState({ password: value })}
+            />
             <Link
               _text={{
                 fontSize: "xs",
@@ -58,7 +96,7 @@ const Login = ({ navigation }: any) => {
               Quên mật khẩu?
             </Link>
           </FormControl>
-          <Button mt="2" colorScheme="indigo">
+          <Button onPress={handleLogin} mt="2" colorScheme="indigo">
             Đăng nhập
           </Button>
           <HStack mt="6" justifyContent="center">
