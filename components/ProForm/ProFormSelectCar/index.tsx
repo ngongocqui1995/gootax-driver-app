@@ -42,7 +42,7 @@ const ProFormSelectCar: React.FC<ProFormSelectCarProps> = (props) => {
               company: findItem?.company?.name || "",
               type_car: findItem?.type_car?.name || "",
             });
-            props.onValueChange?.(item);
+            props.fieldProps?.onValueChange?.(item);
           }}
         >
           {state.data?.map((item: any) => (

@@ -44,7 +44,7 @@ const Profile = ({ navigation }: any) => {
           </Flex>
         </Center>
       </Flex>
-      <Flex direction="column" mt="10" h={56}>
+      <Flex direction="column" mt="10" h={500}>
         <Text fontSize={16} fontWeight={700}>
           Ưu đãi tiết kiệm
         </Text>
