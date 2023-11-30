@@ -97,16 +97,16 @@ const App = () => {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name={NAVIGATOR_SCREEN.HOME_SCREEN}
-              component={HomeScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
               name={NAVIGATOR_SCREEN.REGISTER}
               component={Register}
               options={{
                 headerShown: false,
               }}
+            />
+            <Stack.Screen
+              name={NAVIGATOR_SCREEN.HOME_SCREEN}
+              component={HomeScreen}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>

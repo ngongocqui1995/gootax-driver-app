@@ -6,7 +6,6 @@ const initialState = {
   phone: "",
   email: "",
   avatar: "",
-  token: "",
   gender: "",
 };
 

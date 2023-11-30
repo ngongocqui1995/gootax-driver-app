@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Avatar,
   Center,
@@ -44,7 +45,7 @@ const Profile = ({ navigation }: any) => {
           </Flex>
         </Center>
       </Flex>
-      <Flex direction="column" mt="10" h={500}>
+      <Flex direction="column" mt="10" h={56}>
         <Text fontSize={16} fontWeight={700}>
           Ưu đãi tiết kiệm
         </Text>
@@ -78,7 +79,7 @@ const Profile = ({ navigation }: any) => {
         <Spacer />
         <Divider />
       </Flex>
-      <Flex direction="column" mt="10" h={96}>
+      <Flex direction="column" mt="10" h={500}>
         <Text fontSize={16} fontWeight={700}>
           Tài khoản của tôi
         </Text>
@@ -142,6 +143,7 @@ const Profile = ({ navigation }: any) => {
         <Text
           onPress={() => {
             dispatch(resetProfile());
+            AsyncStorage.removeItem("token");
             navigation.navigate(NAVIGATOR_SCREEN.LOGIN);
           }}
           fontSize={14}
