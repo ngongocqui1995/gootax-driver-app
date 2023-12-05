@@ -7,6 +7,7 @@ const initialState = {
   email: "",
   avatar: "",
   gender: "",
+  location: { lat: 0, lng: 0 },
 };
 
 export const profileSlice = createSlice({

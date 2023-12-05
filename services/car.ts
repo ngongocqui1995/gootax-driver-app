@@ -8,3 +8,9 @@ export const queryCars = (params?: any) => {
     }
   );
 };
+
+export const getTypeCars = () => {
+  return API.get(`type-cars`, {
+    headers: { "x-custom-lang": "vi" },
+  });
+};

@@ -1,11 +1,14 @@
+export const GOOGLE_MAPS_API_KEY = "AIzaSyDuG_Yw3NrzoN79fIWHnE10-9zSbcNvJK8";
+
 export const NAVIGATOR_SCREEN = {
   HOME: "HOME",
   MESSAGE: "MESSAGE",
   HOME_SCREEN: "HOME_SCREEN",
-  HISTORY: "HISTORY",
+  ACTIVATE: "ACTIVATE",
   LOGIN: "LOGIN",
   REGISTER: "REGISTER",
   PROFILE: "PROFILE",
+  BOOK_DETAIL: "BOOK_DETAIL",
 };
 
 export const GENDER_ENUM = {
@@ -56,3 +59,25 @@ export const STATUS_BOOK = {
     background: "#f6ffed",
   },
 };
+
+export enum ENUM_STATUS_DRIVER {
+  PICKING = "PICKING",
+  RIDING = "RIDING",
+}
+
+export type ENUM_STATUS_DRIVER_STRING = keyof typeof ENUM_STATUS_DRIVER;
+
+export const STATUS_DRIVER = {
+  [ENUM_STATUS_DRIVER.PICKING]: {
+    text: "Đã đón khách",
+    key: ENUM_STATUS_DRIVER.PICKING,
+    color: "blue",
+  },
+  [ENUM_STATUS_DRIVER.RIDING]: {
+    text: "Hoàn thành",
+    key: ENUM_STATUS_DRIVER.RIDING,
+    color: "#1677ff",
+  },
+};
+
+export const SERVER_URL = "https://apigootax-ngongocqui1995.cloud.okteto.net/";

@@ -1,5 +1,6 @@
 import axios from "axios";
+import { SERVER_URL } from "./enum";
 
 export default axios.create({
-  baseURL: "https://apigootax-ngongocqui1995.cloud.okteto.net/",
+  baseURL: SERVER_URL,
 });

@@ -4,7 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NativeBaseProvider, StatusBar, extendTheme } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Provider } from "react-redux";
-import History from "./pages/History";
+import Activate from "./pages/Activate";
+import BookDetail from "./pages/Activate/BookDetail";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Message from "./pages/Message";
@@ -41,14 +42,18 @@ const HomeScreen = () => {
         }}
       />
       <Tab.Screen
-        name={NAVIGATOR_SCREEN.HISTORY}
-        component={History}
+        name={NAVIGATOR_SCREEN.ACTIVATE}
+        component={Activate}
         options={{
           headerShown: false,
-          tabBarLabel: "Lịch sử",
+          tabBarLabel: "Hoạt động",
           tabBarLabelStyle: { width: "100%" },
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="history" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="application"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -107,6 +112,13 @@ const App = () => {
               name={NAVIGATOR_SCREEN.HOME_SCREEN}
               component={HomeScreen}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name={NAVIGATOR_SCREEN.BOOK_DETAIL}
+              component={BookDetail}
+              options={{
+                headerShown: false,
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>

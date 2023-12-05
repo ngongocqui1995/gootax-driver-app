@@ -23,22 +23,23 @@ import { getBookCar } from "../../services/book";
 import {
   ENUM_STATUS_BOOK,
   ENUM_STATUS_BOOK_STRING,
+  NAVIGATOR_SCREEN,
   STATUS_BOOK,
 } from "../../utils/enum";
 
-const History = ({ navigation }: any) => {
+const Activate = ({ navigation }: any) => {
   const isFocused = useIsFocused();
   const profile = useSelector((state: any) => state.profile);
   const [state, setState] = useSetState({ data: [], loading: false });
 
   const loadMore = async () => {
     setState({ loading: true });
-    const [, res] = await to(getBookCar(profile?.phone));
+    const [, res] = await to(getBookCar(profile?.id));
     setState({ data: res?.data || [], loading: false });
   };
 
   useAsyncEffect(async () => {
-    if (profile?.phone) {
+    if (profile?.id) {
       await loadMore();
     }
   }, [isFocused]);
@@ -53,7 +54,7 @@ const History = ({ navigation }: any) => {
           color: "warmGray.50",
         }}
       >
-        Lịch sử
+        Hoạt động
       </Heading>
       <FlatList
         mt="10"
@@ -78,22 +79,15 @@ const History = ({ navigation }: any) => {
         data={state.data}
         renderItem={({ item }: any) => (
           <TouchableOpacity
+            disabled={
+              ![ENUM_STATUS_BOOK.PICKING, ENUM_STATUS_BOOK.RIDING].includes(
+                item.status
+              )
+            }
             onPress={() => {
-              // navigation.navigate(NAVIGATOR_SCREEN.BOOK_DETAIL, {
-              //   location_from: {
-              //     lat: item.from_address_lat,
-              //     lng: item.from_address_lng,
-              //   },
-              //   location_to: {
-              //     lat: item.to_address_lat,
-              //     lng: item.to_address_lng,
-              //   },
-              //   type_car: item.type_car?.id,
-              //   distance: item.distance,
-              //   amount: item.amount,
-              //   id: item.id,
-              //   status: item.status,
-              // });
+              navigation.navigate(NAVIGATOR_SCREEN.BOOK_DETAIL, {
+                id: item.id,
+              });
             }}
           >
             <Flex direction="row" alignItems="center" style={{ gap: 6 }}>
@@ -125,11 +119,9 @@ const History = ({ navigation }: any) => {
                   </Text>
                 </Flex>
               </Flex>
-              {[
-                ENUM_STATUS_BOOK.FINDING,
-                ENUM_STATUS_BOOK.PICKING,
-                ENUM_STATUS_BOOK.RIDING,
-              ].includes(item.status) && <ChevronRightIcon />}
+              {[ENUM_STATUS_BOOK.PICKING, ENUM_STATUS_BOOK.RIDING].includes(
+                item.status
+              ) && <ChevronRightIcon />}
             </Flex>
           </TouchableOpacity>
         )}
@@ -140,4 +132,4 @@ const History = ({ navigation }: any) => {
   );
 };
 
-export default History;
+export default Activate;

@@ -1,55 +1,99 @@
-import { useIsFocused } from "@react-navigation/native";
 import { useAsyncEffect, useSetState } from "ahooks";
 import * as Location from "expo-location";
-import { Flex, Image, Spinner, View, useToast } from "native-base";
-import React from "react";
+import { LocationAccuracy } from "expo-location";
+import _ from "lodash";
+import { Flex, Image, Spinner, View } from "native-base";
+import React, { useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
+import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
+import { changeLocation } from "../../services/driver";
+import { updateProfileInfo } from "../../slices/profileSlice";
+import {
+  ENUM_STATUS_BOOK,
+  NAVIGATOR_SCREEN,
+  SERVER_URL,
+} from "../../utils/enum";
+import BookInfo from "./BookInfo";
 
-const Home = () => {
-  const isFocused = useIsFocused();
-  const toast = useToast();
+const Home = ({ navigation }: any) => {
+  const dispatch = useDispatch();
+  const profile = useSelector((state: any) => state.profile);
   const map = React.useRef<MapView | null>();
   const [state, setState] = useSetState<{
     location: { lat?: number; lng?: number };
     loading: boolean;
+    data: any[];
+    isOpen: boolean;
+    book_info?: any;
   }>({
     location: { lat: undefined, lng: undefined },
     loading: false,
+    data: [],
+    isOpen: false,
+    book_info: undefined,
   });
 
-  useAsyncEffect(async () => {
-    if (isFocused) {
-      setState({ loading: true });
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        toast.show({
-          description: "Bạn không cho phép truy cập vị trí!",
-          placement: "top",
+  useEffect(() => {
+    if (profile?.id) {
+      const socket = io(SERVER_URL);
+      socket.on("connect", () => {
+        socket.emit("message", {
+          cmd_type: "JOIN",
+          room_id: profile?.id,
         });
-        return;
-      }
+      });
 
-      const { coords } = await Location.getCurrentPositionAsync({});
-
-      if (coords) {
-        const { longitude, latitude } = coords;
-
-        map.current?.animateToRegion(
-          {
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          },
-          4000
-        );
-        setState({ location: { lat: latitude, lng: longitude } });
-      }
-      setState({ loading: false });
-    } else {
-      setState({ location: { lat: undefined, lng: undefined } });
+      socket.on("message", ({ message }) => {
+        setState({
+          data: _.unionBy([message], state.data, "id").filter(
+            (it) => it.status === ENUM_STATUS_BOOK.FINDING
+          ),
+        });
+      });
     }
-  }, [isFocused]);
+  }, [profile?.id]);
+
+  useAsyncEffect(async () => {
+    setState({ loading: true });
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") return;
+
+    const { coords } = await Location.getCurrentPositionAsync({
+      accuracy: LocationAccuracy.Highest,
+    });
+
+    Location.watchPositionAsync(
+      { accuracy: LocationAccuracy.Highest },
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        await changeLocation({
+          current_lat: latitude,
+          current_lng: longitude,
+        });
+
+        const location = { lat: latitude, lng: longitude };
+        setState({ location });
+        dispatch(updateProfileInfo({ location } as any));
+      }
+    );
+
+    if (coords) {
+      const { longitude, latitude } = coords;
+
+      map.current?.animateToRegion(
+        {
+          latitude,
+          longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+        4000
+      );
+      setState({ location: { lat: latitude, lng: longitude } });
+    }
+    setState({ loading: false });
+  }, []);
 
   return (
     <View>
@@ -70,12 +114,42 @@ const Home = () => {
           >
             <Image
               alt="location-user"
-              source={require("../../assets/location-user.png")}
+              source={require("../../assets/location-taxi.png")}
               style={{ height: 35, width: 35 }}
             />
           </Marker>
         )}
+        {state.data.map((it) => (
+          <Marker
+            key={it.id}
+            onPress={() => setState({ isOpen: true, book_info: it })}
+            coordinate={{
+              latitude: it.from_address_lat,
+              longitude: it.from_address_lng,
+            }}
+          >
+            <Image
+              alt="location-user"
+              source={require("../../assets/location-user.png")}
+              style={{ height: 35, width: 35 }}
+            />
+          </Marker>
+        ))}
       </MapView>
+      <BookInfo
+        isOpen={state.isOpen}
+        book_info={state.book_info}
+        onOk={() => {
+          setState({
+            data: state.data.filter((it) => it.id !== state.book_info?.id),
+            isOpen: false,
+          });
+          navigation.navigate(NAVIGATOR_SCREEN.BOOK_DETAIL, {
+            id: state.book_info?.id,
+          });
+        }}
+        onClose={() => setState({ isOpen: false })}
+      />
       {state.loading && (
         <Flex
           position="absolute"

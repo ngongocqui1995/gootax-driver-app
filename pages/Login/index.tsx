@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import { useAsyncEffect, useSetState } from "ahooks";
 import to from "await-to-js";
+import * as Location from "expo-location";
 import {
   Box,
   Button,
@@ -31,6 +32,17 @@ const Login = ({ navigation }: any) => {
     password: "",
     loading: false,
   });
+
+  useAsyncEffect(async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      toast.show({
+        description: "Bạn không cho phép truy cập vị trí!",
+        placement: "top",
+      });
+      return;
+    }
+  }, []);
 
   const updateProfile = async (token: string): Promise<boolean> => {
     const [err, res]: any = await to(getProfile(token));
