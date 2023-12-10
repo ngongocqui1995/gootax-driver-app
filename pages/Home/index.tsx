@@ -57,7 +57,10 @@ const Home = ({ navigation }: any) => {
   useAsyncEffect(async () => {
     setState({ loading: true });
     let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") return;
+    if (status !== "granted") {
+      setState({ loading: false });
+      return;
+    }
 
     const { coords } = await Location.getCurrentPositionAsync({
       accuracy: LocationAccuracy.Highest,
