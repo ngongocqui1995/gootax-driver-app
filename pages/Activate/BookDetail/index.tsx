@@ -13,7 +13,7 @@ import {
   View,
   useToast,
 } from "native-base";
-import React from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
@@ -33,12 +33,27 @@ const BookDetail = ({ route, navigation }: any) => {
   const profile = useSelector((state: any) => state.profile);
   const toast = useToast();
   const map = React.useRef<MapView | null>();
-  const [state, setState] = useSetState({ data: [], loading: false });
+  const [state, setState] = useSetState<{ data: any[]; loading: boolean }>({
+    data: [],
+    loading: false,
+  });
 
   const loadBookCar = async (id: string) => {
     const [, res] = await to(getOneBookCar(id));
     setState({ data: res?.data || [] });
   };
+
+  useEffect(() => {
+    map.current?.animateToRegion(
+      {
+        latitude: state.data[0].from_address_lat,
+        longitude: state.data[0].from_address_lng,
+        latitudeDelta: 0.1,
+        longitudeDelta: 0.1,
+      },
+      4000
+    );
+  }, [state.data]);
 
   useAsyncEffect(async () => {
     if (isFocused) {
@@ -67,6 +82,11 @@ const BookDetail = ({ route, navigation }: any) => {
     });
     await loadBookCar(id);
     setState({ loading: false });
+
+    map.current?.fitToSuppliedMarkers(["mk1", "mk2"], {
+      edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+    });
+
     if (change_status === ENUM_STATUS_BOOK.COMPLETED) navigation.goBack();
   };
 
@@ -74,7 +94,7 @@ const BookDetail = ({ route, navigation }: any) => {
     <Flex direction="column">
       {state.data.map((it: any) => (
         <View key={it.id}>
-          <View height="70%">
+          <View height="60%">
             <MapView
               ref={(ref) => {
                 map.current = ref;
@@ -178,7 +198,7 @@ const BookDetail = ({ route, navigation }: any) => {
               ) : null}
             </MapView>
           </View>
-          <View height="30%">
+          <View height="40%">
             <Center>
               <Box w="90%" p="4">
                 <View>

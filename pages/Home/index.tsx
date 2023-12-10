@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useAsyncEffect, useSetState } from "ahooks";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
@@ -18,6 +19,7 @@ import BookInfo from "./BookInfo";
 
 const Home = ({ navigation }: any) => {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const profile = useSelector((state: any) => state.profile);
   const map = React.useRef<MapView | null>();
   const [state, setState] = useSetState<{
@@ -56,7 +58,7 @@ const Home = ({ navigation }: any) => {
 
   useAsyncEffect(async () => {
     setState({ loading: true });
-    let { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setState({ loading: false });
       return;
@@ -96,7 +98,7 @@ const Home = ({ navigation }: any) => {
       setState({ location: { lat: latitude, lng: longitude } });
     }
     setState({ loading: false });
-  }, []);
+  }, [isFocused]);
 
   return (
     <View>

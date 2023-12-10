@@ -76,7 +76,7 @@ export const STATUS_DRIVER = {
   [ENUM_STATUS_DRIVER.RIDING]: {
     text: "Hoàn thành",
     key: ENUM_STATUS_DRIVER.RIDING,
-    color: "#1677ff",
+    color: "green",
   },
 };
 
