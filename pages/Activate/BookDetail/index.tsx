@@ -39,21 +39,20 @@ const BookDetail = ({ route, navigation }: any) => {
   });
 
   const loadBookCar = async (id: string) => {
+    setState({ loading: true });
     const [, res] = await to(getOneBookCar(id));
-    setState({ data: res?.data || [] });
+    setState({ data: res?.data || [], loading: false });
   };
 
   useEffect(() => {
-    map.current?.animateToRegion(
-      {
-        latitude: state.data[0].from_address_lat,
-        longitude: state.data[0].from_address_lng,
-        latitudeDelta: 0.1,
-        longitudeDelta: 0.1,
-      },
-      4000
-    );
-  }, [state.data]);
+    if (!state.loading) {
+      setTimeout(() => {
+        map.current?.fitToSuppliedMarkers(["mk1", "mk2"], {
+          edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+        });
+      }, 1000);
+    }
+  }, [state.loading]);
 
   useAsyncEffect(async () => {
     if (isFocused) {

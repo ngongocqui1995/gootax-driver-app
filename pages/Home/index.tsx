@@ -1,5 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import { useAsyncEffect, useSetState } from "ahooks";
+import to from "await-to-js";
 import * as Location from "expo-location";
 import { LocationAccuracy } from "expo-location";
 import _ from "lodash";
@@ -15,6 +16,7 @@ import {
   NAVIGATOR_SCREEN,
   SERVER_URL,
 } from "../../utils/enum";
+import { getCurrentPosition } from "../../utils/utils";
 import BookInfo from "./BookInfo";
 
 const Home = ({ navigation }: any) => {
@@ -64,9 +66,10 @@ const Home = ({ navigation }: any) => {
       return;
     }
 
-    const { coords } = await Location.getCurrentPositionAsync({
-      accuracy: LocationAccuracy.Highest,
-    });
+    let location;
+    do {
+      [, location] = await to(getCurrentPosition());
+    } while (!location?.coords);
 
     Location.watchPositionAsync(
       { accuracy: LocationAccuracy.Highest },
@@ -83,8 +86,8 @@ const Home = ({ navigation }: any) => {
       }
     );
 
-    if (coords) {
-      const { longitude, latitude } = coords;
+    if (location.coords) {
+      const { longitude, latitude } = location.coords;
 
       map.current?.animateToRegion(
         {
