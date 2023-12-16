@@ -15,6 +15,7 @@ interface BookInfoProps {
   isOpen: boolean;
   book_info: any;
   onOk: () => void;
+  onCancel: () => void;
   onClose: () => void;
 }
 
@@ -86,7 +87,7 @@ const BookInfo: React.FC<BookInfoProps> = (props) => {
             <BookCancel
               book_info={props.book_info}
               onClose={props.onClose}
-              onOk={props.onOk}
+              onCancel={props.onCancel}
             />
             <BookSuccess
               book_info={props.book_info}

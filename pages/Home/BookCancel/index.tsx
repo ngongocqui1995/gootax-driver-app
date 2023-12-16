@@ -7,7 +7,7 @@ import { cancelBookCar } from "../../../services/book";
 interface BookCancelProps {
   book_info: any;
   onClose: () => void;
-  onOk: () => void;
+  onCancel: () => void;
 }
 
 const BookCancel: React.FC<BookCancelProps> = (props) => {
@@ -35,7 +35,7 @@ const BookCancel: React.FC<BookCancelProps> = (props) => {
       placement: "top",
     });
     setState({ isOpen: false, loading: false });
-    props.onOk();
+    props.onCancel();
   };
 
   const onClose = () => {

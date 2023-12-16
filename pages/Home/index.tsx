@@ -156,6 +156,12 @@ const Home = ({ navigation }: any) => {
             id: state.book_info?.id,
           });
         }}
+        onCancel={() => {
+          setState({
+            data: state.data.filter((it) => it.id !== state.book_info?.id),
+            isOpen: false,
+          });
+        }}
         onClose={() => setState({ isOpen: false })}
       />
       {state.loading && (
